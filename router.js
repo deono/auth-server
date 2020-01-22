@@ -1,5 +1,5 @@
+const Authentication = require("./controllers/authentication");
+
 module.exports = function(app) {
-  app.get("/", (req, res) => {
-    res.send(["one", "two", "three", "four", "five"]);
-  });
+  app.post("/signup", Authentication.signup);
 };

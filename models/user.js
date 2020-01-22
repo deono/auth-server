@@ -15,3 +15,5 @@ const ModelClass = mongoose.model("user", userSchema);
 
 // export the model
 module.exports = ModelClass;
+
+// mongodb+srv://deono:n03nj5gh@cluster0-zra7i.mongodb.net/test?retryWrites=true&w=majority
