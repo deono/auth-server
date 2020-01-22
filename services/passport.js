@@ -2,6 +2,36 @@ const passport = require("passport");
 const User = require("../models/user");
 const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
+const LocalStrategy = require("passport-local");
+
+// Setup option for local strategy
+const localOptions = {
+  usernameField: "email",
+  passwordField: "password",
+  session: false
+};
+// Create Local Strategy
+const LocalLogin = new LocalStrategy(localOptions, function(
+  email,
+  password,
+  done
+) {
+  // verify the username and passpord,
+  // call done() with the user if correct.
+  // otherwise call done() with false
+  User.findOne({ email: email }, function(err, user) {
+    // database error
+    if (err) {
+      return done(err);
+    }
+    // user was not found
+    if (!user) {
+      return done(null, false);
+    }
+
+    // compare passwords
+  });
+});
 
 // Setup options for JWT Strategy
 const jwtOptions = {
