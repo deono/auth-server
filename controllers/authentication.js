@@ -1,43 +1,52 @@
 const jwt = require("jwt-simple");
 const User = require("../models/user");
+// const config = require("../config");
 
 function tokenForUser(user) {
   const timestamp = new Date().getTime();
   return jwt.encode({ sub: user.id, iat: timestamp }, process.env.JWT_SECRET);
 }
 
+exports.signin = function(req, res, next) {
+  // User has already had their email and password auth'd
+  // We just need to give them a token
+  res.send({ token: tokenForUser(req.user) });
+};
+
 exports.signup = function(req, res, next) {
-  // get data from the request object
   const email = req.body.email;
   const password = req.body.password;
 
-  // check if both email and password was supplied
   if (!email || !password) {
     return res
       .status(422)
       .send({ error: "You must provide email and password" });
   }
-  // see if a user with a given email exists
-  User.findOne({ email: email }, (err, existingUser) => {
+
+  // See if a user with the given email exists
+  User.findOne({ email: email }, function(err, existingUser) {
     if (err) {
-      console.error(err);
       return next(err);
     }
-    // if a user with the email does exist, return an error
+
+    // If a user with email does exist, return an error
     if (existingUser) {
-      return res.status(422).send({ error: "Email already in use" }); // 'Unprocessable entity'
+      return res.status(422).send({ error: "Email is in use" });
     }
+
     // If a user with email does NOT exist, create and save user record
-    const user = new User({ email: email, password: password });
-    user.save(err => {
-      // save the record to the database
+    const user = new User({
+      email: email,
+      password: password
+    });
+
+    user.save(function(err) {
       if (err) {
         return next(err);
       }
-      // Respond to request with jwt token indicating the user was created
+
+      // Repond to request indicating the user was created
       res.json({ token: tokenForUser(user) });
     });
   });
-
-  //
 };
