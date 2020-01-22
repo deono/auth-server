@@ -30,6 +30,15 @@ const LocalLogin = new LocalStrategy(localOptions, function(
     }
 
     // compare passwords
+    user.comparePassword(password, function(err, isMatch) {
+      if (err) {
+        return done(err);
+      }
+      if (!isMatch) {
+        return done(null, false);
+      }
+      return done(user);
+    });
   });
 });
 

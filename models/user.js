@@ -34,6 +34,7 @@ userSchema.pre("save", function(next) {
   });
 });
 
+// method to compare the stored passowrd with the provided password using bcrypt
 userSchema.methods.comparePassword = function(candidatePassword, callback) {
   bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
     if (err) {
