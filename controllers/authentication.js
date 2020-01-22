@@ -4,6 +4,13 @@ exports.signup = function(req, res, next) {
   // get data from the request object
   const email = req.body.email;
   const password = req.body.password;
+
+  // check if both email and password was supplied
+  if (!email || !password) {
+    return res
+      .status(422)
+      .send({ error: "You must provide email and password" });
+  }
   // see if a user with a given email exists
   User.findOne({ email: email }, (err, existingUser) => {
     if (err) {
